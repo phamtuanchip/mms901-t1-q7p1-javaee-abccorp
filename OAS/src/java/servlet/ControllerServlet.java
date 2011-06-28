@@ -9,37 +9,35 @@ import entity.AuctionInfo;
 import entity.BidDetails;
 import entity.Product;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import session.AuctionInfoFacade;
 import session.CategoryFacade;
+import session.ProductFacade;
 
 /**
  *
  * @author Hoang Manh Hung
  */
-@WebServlet(name="ControllerServlet",
-            loadOnStartup = 1,
-            urlPatterns = {"/auction",
-                           "/bid",
-                           "/viewCart",
-                           "/updateCart",
-                           "/checkout",
-                           "/purchase",
-                           "/confirmation",
-                           "/chooseLanguage"})
 public class ControllerServlet extends HttpServlet {
 
     private String surcharge;
     
     @EJB
     private CategoryFacade categoryFacade;
+    @EJB
+    private ProductFacade productFacade;
+    @EJB
+    private AuctionInfoFacade auctionInfoFacade;
     
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -61,52 +59,6 @@ public class ControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
 
-        String userPath = request.getServletPath();
-        HttpSession session = request.getSession();
-        
-        
-        // if category page is requested
-        if (userPath.equals("/auction")) {
-            // TODO: Implement category request
-            
-        // if cart page is requested
-        } else if (userPath.equals("/viewCart")) {
-            // TODO: Implement cart page request
-            String clear = request.getParameter("clear");
-
-            if ((clear != null) && clear.equals("true")) {
-
-                ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-                cart.clear();
-            }
-            
-            userPath = "/cart";
-
-        // if checkout page is requested
-        } else if (userPath.equals("/checkout")) {
-            // TODO: Implement checkout page request
-            ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-
-            // calculate total
-            cart.calculateTotal(surcharge);
-
-            // forward to checkout page and switch to a secure channel
-            
-
-        // if user switches language
-        } else if (userPath.equals("/chooseLanguage")) {
-            // TODO: Implement language request
-
-        }
-
-        // use RequestDispatcher to forward request internally
-        String url = "/WEB-INF/view" + userPath + ".jsp";
-
-        try {
-            request.getRequestDispatcher(url).forward(request, response);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     /**
@@ -122,45 +74,29 @@ public class ControllerServlet extends HttpServlet {
 
         String userPath = request.getServletPath();
         HttpSession session = request.getSession();
-        ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-        BidDetails bidDetails = (BidDetails) session.getAttribute("bidDetails");
+        ShoppingCart cart = (ShoppingCart)session.getAttribute("cart");
+        BidDetails bidDetails = (BidDetails)session.getAttribute("bidDetails");
         AuctionInfo auctionInfo = (AuctionInfo)session.getAttribute("auctionInfo");
 
-        // if bid action is called
-        if (userPath.equals("/bid")) {
-            // TODO: Implement add product to cart action
-            Product p = new Product(20,"testProduct", 3, 4, 50);
-            session.setAttribute("test", p);
-            request.getParameter("id");
+        try {
+            productFacade = (ProductFacade)new InitialContext().lookup("java:Module/productFacade");
+            auctionInfoFacade = (AuctionInfoFacade)new InitialContext().lookup("java:Module/auctionInfoFacade");
+            int carId = Integer.parseInt(request.getParameter("catId"));
+
+            Product p = productFacade.find(request.getParameter("productId"));
+            System.out.println("old: " + p.getPrice());
+            AuctionInfo ai = auctionInfoFacade.find(p);
+            p.setPrice(p.getPrice() + 5);
+            System.out.println("new: " + p.getPrice());
+            productFacade.edit(p);
+            
             /*Double highestBid = (Double)session.getAttribute("highestBid");
             highestBid += 5;
             session.setAttribute("auctionInfo", highestBid);*/
-            
-            userPath = "/auction";
-            if (cart == null) {
-
-            }
-
-        // if updateCart action is called
-        } else if (userPath.equals("/updateCart")) {
-            // TODO: Implement update cart action
-
-        // if purchase action is called
-        } else if (userPath.equals("/purchase")) {
-            // TODO: Implement purchase action
-
-            userPath = "/confirmation";
+            response.sendRedirect("/OAS/view/auction.jsp");
+        } catch (NamingException ex) {
+            Logger.getLogger(ControllerServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // use RequestDispatcher to forward request internally
-        String url = "/WEB-INF/view" + userPath + ".jsp";
-
-        try {
-            request.getRequestDispatcher(url).forward(request, response);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        
     }
-    
-  
 }

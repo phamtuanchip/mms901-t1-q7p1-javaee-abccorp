@@ -1,0 +1,37 @@
+<%-- any content can be specified here e.g.: --%>
+<%@page import="com.sun.corba.se.spi.activation.Server"%>
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="/OAS/css/OAS.css">
+        <title>The Online Auction System</title>
+    </head>
+    <body>
+        <div id="main">
+            <div id="header">
+                <div id="widgetBar">
+
+                    <div class="headerWidget">
+                        [ language toggle ]
+                    </div>
+
+                    <div class="headerWidget">
+                        [ checkout button ]
+                    </div>
+
+                    <div class="headerWidget">
+                        <img src="/OAS/img/cart.gif" alt="shopping cart icon" id="cart"></img>
+                    </div>
+
+                </div>
+
+                <a href="/OAS">
+                    <img src="/OAS/img/logo.png" id="logo" alt="OAS logo">
+                </a>
+
+                <img src="/OAS/img/logoText.png" id="logoText" alt="Online Auction System">
+            </div>
