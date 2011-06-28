@@ -21,7 +21,7 @@
                 
                 <c:forEach var="category" items="${categories.rows}">
                     <div class="categoryBox">
-                        <a href="auction?${category.CategoryId}">
+                        <a href="view/auction.jsp?${category.CategoryId}">
                             <span class="categoryLabel"></span>
                             <span class="categoryLabelText">${category.CategoryName}</span>
                             <br/><br/>

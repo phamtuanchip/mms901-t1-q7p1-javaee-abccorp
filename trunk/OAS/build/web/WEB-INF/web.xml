@@ -3,12 +3,12 @@
     <context-param>
         <description>The relative path to product images</description>
         <param-name>productImagePath</param-name>
-        <param-value>img/products/</param-value>
+        <param-value>/OAS/img/products/</param-value>
     </context-param>
     <context-param>
         <description>The relative path to category images</description>
         <param-name>categoryImagePath</param-name>
-        <param-value>img/categories/</param-value>
+        <param-value>/OAS/img/categories/</param-value>
     </context-param>
     <servlet>
         <servlet-name>ControllerServlet</servlet-name>
@@ -17,10 +17,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ControllerServlet</servlet-name>
-        <url-pattern>/auction</url-pattern>
         <url-pattern>/bid</url-pattern>
-        <url-pattern>/viewCart</url-pattern>
-        <url-pattern>/checkout</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -31,9 +28,9 @@
         <jsp-property-group>
             <description>header and footer settings</description>
             <url-pattern>/index.jsp</url-pattern>
-            <url-pattern>/WEB-INF/view/*</url-pattern>
-            <include-prelude>/WEB-INF/jspf/header.jspf</include-prelude>
-            <include-coda>/WEB-INF/jspf/footer.jspf</include-coda>
+            <url-pattern>/view/*</url-pattern>
+            <include-prelude>/jspf/header.jspf</include-prelude>
+            <include-coda>/jspf/footer.jspf</include-coda>
         </jsp-property-group>
     </jsp-config>
     <resource-ref>
